@@ -186,10 +186,20 @@ public class JugadorImpl extends Conexion implements DAOJugador {
     public void sqlCrearEquip(String nom, String propietari) throws Exception {
         try{
             this.conectar();
-            PreparedStatement st = this.conexion.prepareStatement("INSERT INTO Equip(nom, propietari) VALUES (?,?)");
+            String cadenaSQL="INSERT INTO Equip(nom, propietari) VALUES (?,?)";
+            PreparedStatement st = this.conexion.prepareStatement(cadenaSQL, PreparedStatement.RETURN_GENERATED_KEYS);
             st.setString(1, nom);
             st.setString(2, propietari);
-            st.executeUpdate();
+            //st.executeUpdate();
+            int n = st.executeUpdate();
+            try (ResultSet rs = st.getGeneratedKeys()) {
+                while (rs.next()) {
+                    System.out.println("Codi generat per getGeneratedKeys():"
+                            + rs.getInt(1));
+                }
+            }
+            System.out.println("S'ha afegit " + n + " items");
+            st.clearParameters();
         } catch (Exception e){
             throw e;
         } finally{
@@ -293,42 +303,15 @@ public class JugadorImpl extends Conexion implements DAOJugador {
         try{
             this.conectar();
             Statement stat = conexion.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT id FROM Equip WHERE nom = '"+nomEquip+"' AND propietari = '"+propietari+"'");
-            while (resultat.next()) {
-                int newID =resultat.getInt(1);
-                PreparedStatement st = this.conexion.prepareStatement("UPDATE Criatura SET equip=? WHERE nom = ? AND propietari = ?");
-                st.setInt(1, newID);
-                st.setString(2, nomCriatura);
-                st.setString(3, propietari);
-                st.executeUpdate();
-                
-                PreparedStatement st2 = this.conexion.prepareStatement("UPDATE Equip SET potencial="
-                        + "(SELECT (SUM(atac)+SUM(defensa))/2 FROM Criatura WHERE equip = ? AND propietari = ?) WHERE nom = ? AND propietari = ?");
-                st2.setInt(1, newID);
-                st2.setString(2, propietari);
-                st2.setString(3, nomEquip);
-                st2.setString(4, propietari);
-                st2.executeUpdate();
-                }
+            //(SELECT equip FROM Criatura WHERE equip = (SELECT e.nom FROM Equip E JOIN Criatura c ON e.id=c.equip WHERE e.nom = 'z')
             
-        } catch (Exception e){
-            throw e;
-        } finally{
-            this.cerrar();
-            
-        }
-    }
-
-    @Override
-    public void sqlModificarCriaturaEquip(String nomCriatura, String nomEquip, String propietari) throws Exception {
-        try{
-            this.conectar();
-            Statement stat = conexion.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT (SELECT equip FROM Criatura WHERE nom = '"+nomCriatura+"' AND propietari = '"+propietari+"'),(SELECT nom FROM Equip WHERE id = (SELECT equip FROM Criatura WHERE nom = '"+nomCriatura+"' AND propietari = '"+propietari+"')),id FROM Equip WHERE nom = '"+nomEquip+"' AND propietari = '"+propietari+"'");
+            ResultSet resultat = stat.executeQuery("SELECT (SELECT equip FROM Criatura WHERE nom = '"+nomCriatura+"' AND propietari = '"+propietari+"'),(SELECT nom FROM Equip WHERE id = (SELECT equip FROM Criatura WHERE nom = '"+nomCriatura+"' AND propietari = '"+propietari+"')),id, (SELECT COUNT(equip) FROM Criatura WHERE equip = (SELECT distinct e.id FROM Equip e JOIN Criatura c ON e.id=c.equip WHERE e.nom = '"+nomEquip+"')) FROM Equip WHERE nom = '"+nomEquip+"' AND propietari = '"+propietari+"'");
             while (resultat.next()) {
                 int oldID =resultat.getInt(1);
                 String oldNomEquip = resultat.getString(2);
                 int newID =resultat.getInt(3);
+                int count= resultat.getInt(4);
+                if(count<=6){
                 PreparedStatement st = this.conexion.prepareStatement("UPDATE Criatura SET equip=? WHERE nom = ? AND propietari = ?");
                 st.setInt(1, newID);
                 st.setString(2, nomCriatura);
@@ -351,8 +334,26 @@ public class JugadorImpl extends Conexion implements DAOJugador {
                 st3.setString(4, propietari);
                 st3.executeUpdate();
                 }
+                }
             
                 
+            
+        } catch (Exception e){
+            throw e;
+        } finally{
+            this.cerrar();
+            
+        }
+    }
+
+    @Override
+    public void sqlEliminarCriaturaEquip(String nomCriatura, String propietari) throws Exception {
+        try{
+            this.conectar();
+            PreparedStatement st = this.conexion.prepareStatement("UPDATE Criatura SET equip = 0 WHERE nom = ? AND propietari = ?");
+            st.setString(1, nomCriatura);
+            st.setString(2, propietari);
+            st.executeUpdate();
             
         } catch (Exception e){
             throw e;
@@ -368,7 +369,7 @@ public class JugadorImpl extends Conexion implements DAOJugador {
             this.conectar();
             String content="";
             Statement stat = conexion.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT nom, atac, defensa, rasa, medi, habilitat_esp FROM Criatura WHERE equip = (SELECT c.equip FROM Criatura c JOIN Equip e ON c.equip=e.id WHERE e.nom = '"+nom+"') AND propietari = '"+propietari+"'");
+            ResultSet resultat = stat.executeQuery("SELECT nom, atac, defensa, rasa, medi, habilitat_esp FROM Criatura WHERE equip = (SELECT DISTINCT c.equip FROM Criatura c JOIN Equip e ON c.equip=e.id WHERE e.nom = '"+nom+"') AND propietari = '"+propietari+"'");
             while (resultat.next()) {
                 content+=resultat.getString(1)
                             + "-" + resultat.getInt(2)

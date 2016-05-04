@@ -203,9 +203,10 @@ public class FXML_HomeController implements Initializable {
     }
     
     @FXML
-    private void modificarCEButton(ActionEvent event) throws IOException{
+    private void eliminarCEButton(ActionEvent event) throws IOException{
         try {
-            jugadorSQL.sqlModificarCriaturaEquip(criaturaModificarEText.getText(), equipModificarEText.getText(), player.getNom());        } catch (Exception e) {
+            jugadorSQL.sqlEliminarCriaturaEquip(criaturaModificarEText.getText(), player.getNom());
+        } catch (Exception e) {
             System.out.println(e);
         }
     }

@@ -24,6 +24,6 @@ public interface DAOJugador {
     public String sqlLlistarEquip(String propietari) throws Exception;
     public String sqlLlistarCriaturesEquip(String nom, String propietari) throws Exception;
     public void sqlAfegirCriaturaEquip(String nomCriatura, String nomEquip, String propietari) throws Exception;
-    public void sqlModificarCriaturaEquip(String nomCriatura, String nomEquip, String propietari) throws Exception;
+    public void sqlEliminarCriaturaEquip(String nomCriatura, String propietari) throws Exception;
     
 }

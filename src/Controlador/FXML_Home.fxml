@@ -178,8 +178,7 @@
                         <Font name="TakaoPGothic" size="17.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="equipModificarEText" layoutX="454.0" layoutY="161.0" prefHeight="25.0" prefWidth="114.0" promptText="equip" />
-                  <Button fx:id="modificarCriaturaEButton" layoutX="307.0" layoutY="192.0" mnemonicParsing="false" onAction="#modificarCEButton" style="-fx-background-color: Gray; -fx-color: red;" text="Modificar">
+                  <Button fx:id="modificarCriaturaEButton" layoutX="476.0" layoutY="160.0" mnemonicParsing="false" onAction="#eliminarCEButton" style="-fx-background-color: Gray; -fx-color: red;" text="Modificar">
                      <font>
                         <Font name="TakaoPGothic" size="14.0" />
                      </font>

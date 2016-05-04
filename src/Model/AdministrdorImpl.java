@@ -168,6 +168,11 @@ public class AdministrdorImpl extends Conexion implements DAOAdministrador {
             stat.executeUpdate("INSERT INTO Jugador(nom, pass) VALUES('player','p')");
             stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('A',5,3,'player')");
             stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('B',1,2,'player')");
+            stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('C',1,2,'player')");
+            stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('D',1,2,'player')");
+            stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('E',1,2,'player')");
+            stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('F',1,2,'player')");
+            stat.executeUpdate("INSERT INTO Criatura(nom,atac,defensa,propietari) VALUES('G',1,2,'player')");
             
 
             

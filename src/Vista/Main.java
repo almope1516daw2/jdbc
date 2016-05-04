@@ -37,7 +37,7 @@ public class Main {
             dao2.sqlCrearEquip("B", Inge.getNom());
             dao2.sqlAfegirCriaturaEquip("C1", "A", Inge.getNom());
             dao2.sqlAfegirCriaturaEquip("C2", "A", Inge.getNom());
-            dao2.sqlModificarCriaturaEquip("C2", "B", Inge.getNom());
+            dao2.sqlEliminarCriaturaEquip("B", Inge.getNom());
             
             
             
